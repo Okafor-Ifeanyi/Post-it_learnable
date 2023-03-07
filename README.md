@@ -1,2 +1,4 @@
-# Post-it_learnable
-Post-it is a social media app that allows users make posts then interact through the comment session and ...
+Post-it by `Prog Bio`
+
+#### Start up
+   - 1st commit Hosted with my initial installed dependencies 
