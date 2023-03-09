@@ -10,7 +10,7 @@ app.use(express.json())
 
 app.use('/api/v1/', router)
 
-mongoose.connect(process.env.MONGODB_URI, {
+mongoose.connect(process.env.MONGODB_URI_offline, {
     useNewUrlParser: true, 
     useUnifiedTopology: true,
     family: 4,
@@ -21,7 +21,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 .catch((err) => {
     console.log("There is an issue trying to connect to your database")
 })
-
+ 
 const port = process.env.PORT
 
 app.listen(port, () => {
