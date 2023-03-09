@@ -4,6 +4,7 @@ const postRouter = require('./post.route')
 const testmiddleware = require('../middlewares/test.middleware')
 
 router.use('/user', testmiddleware, userRouter)
-router.use('/post', postRouter)
+router.use('/post', testmiddleware, postRouter)
 
-module.exports = router; 
+
+module.exports = router;
