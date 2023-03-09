@@ -58,10 +58,10 @@ class UserController {
         // Since the username is a unique key, we have to make it consistent 
         if (existingUser) {
             const available = await service.findbyID({
-                _id: updateData.id.toLowercase()
+                _id: updateData.id
             })
-
-            if (available._id.toString() == existingUser._id.toString()){
+            console.log(available)
+            if (available){
                 res.status(403).json({
                     success: false,
                     message: 'User with update name already exists'
@@ -89,15 +89,17 @@ class UserController {
  
         if (!existingUser) res.status(403).json({
             success: false,
-            message: 'Book to edit does not exist'
+            message: 'User to edit does not exist'
         })
 
-        const deleteBook = await service.delete(bookID)
+        // Deletes User
+        const deleteUser = await service.delete(userID)
 
+        // Success Alert
         res.status(200).json({
             success: true,
-            message: 'Book deleted successfully',
-            data: deleteBook
+            message: 'User deleted successfully',
+            data: deleteUser
         })
     }
 
@@ -106,24 +108,23 @@ class UserController {
         const info = req.body
 
         // Check if the book to delete is the database
-        const existingBook = await service.findbyID({
+        const existingUser = await service.findbyID({
             username: info.username
         })
-        console.log(existingBook)
 
-        if (!existingBook) res.status(403).json({
+        if (!existingUser) res.status(403).json({
             success: false,
             message: 'User does not not exist'
         })
 
         res.status(201).json({
             success: true,
-            message: 'Book Fetched successfully',
-            data: existingBook
+            message: 'User Fetched successfully',
+            data: existingUser
         })
     }
 
-    // Fetch a single user by username
+    // Fetch a single user by ID
     async getOneUser(req, res){
         const infoID = req.params.id
 

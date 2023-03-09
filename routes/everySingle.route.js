@@ -8,11 +8,19 @@ const { createUser,
     fetchAll
     } = require('../controllers/user.controller')
 
+// routers for user
 router.post('/', createUser)
 router.patch('/:id', updateUser) 
-router.delete('/:id', deleteUser)
+router.patch('/softdel/:id', deleteUser)
 router.post('/username', getUserbyUsername) 
 router.get('/:id', getOneUser)
 router.get('/', fetchAll)
+
+// routers for post
  
+
+
+// routers for comment
+
+
 module.exports = router

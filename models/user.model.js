@@ -31,7 +31,7 @@ const User = mongoose.Schema({
         required: true
     }
     // createdAt: {timestamp: true}
-});
+},  { timestamps: true });
 
 // 
 User.pre('save', async function (next) {
