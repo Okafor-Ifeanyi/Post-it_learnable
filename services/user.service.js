@@ -9,13 +9,13 @@ class UserService {
 
     // Edit a user
     async update(id, userData) {
-        return await bookModel.findByAndUpdate(id, userData, {
+        return await userModel.findByIdAndUpdate(id, userData, { 
             new: true
         })
     }
 
     // Delete a user
-    async delete(id){
+    async delete(filter){
         return await userModel.findByAndDelete(id)
     }
 
