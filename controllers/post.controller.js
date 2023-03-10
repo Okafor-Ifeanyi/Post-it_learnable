@@ -19,7 +19,7 @@ class PostController {
                 message: 'Crosscheck User ID'})
         } else{
             try {
-                await UserService.findbyID({ _id: info.ownerID })  
+                await UserService.findbyID({ _id: info.ownerID})  
             } catch (error) {
                 res.status(403).json({
                     success: false, 
@@ -34,23 +34,15 @@ class PostController {
             res.status(403).json({
                 success: false,
                 message: `Max password length exceded by "${extra_text}" characters`})
-        } // else{
-        //     try {
-        //         await PostService.findbyID({ post: info.post })  
-        //     } catch (error) {
-        //         res.status(403).json({
-        //             success: false,  
-        //             message: 'Post already exists'})
-        //     };
-        // };
+        } 
 
-        const available = await PostService.findbyID({ post: info.post })
-        if (available){
+        try {
+            await PostService.findbyID({ post: info.post, deleted: false })  
+        } catch (error) {
             res.status(403).json({
                 success: false,
-                message: 'Post already exists'
-            })
-        }
+                message: error})
+        };
 
         // Create Post
         const newPost = await PostService.createPost(info)
@@ -71,7 +63,7 @@ class PostController {
         
          // check if use does not exist
          const existingPost = await PostService.findbyID({
-            _id: infoID
+            _id: infoID, deleted: false
         })
         
         if(!existingPost)res.status(403).json({
@@ -103,77 +95,100 @@ class PostController {
         })
     }
 
-    // Delete a single user 
+    // Delete a single user
     async deletePost(req, res) {
         const postID = req.params.id
-        const deleteInfo = {
-            post: "Tweet has been deleted by owner",
-            ownerID: ""
-        }
-
-
-        // Check if the book to delete is the database
-        // const existingPost = await PostService.findbyID({
-        //     _id: postID
-        // })
- 
-        // if (!existingPost) res.status(403).json({
-        //     success: false,
-        //     message: 'Post to edit does not exist'
-        // })
-        if (postID == deleteInfo){
-            res.status(403).json({
+        
+        const category = await PostService.findbyID({ _id: postID, deleted: false });
+        if (!category || category.deleted == true) {
+            res.status(404).json({
                 success: false,
-                message: 'Post has already been deleted'
+                message: 'Post does not exist'
             })
-        } else {
+        } else { 
             try {
-                await PostService.findbyID({ _id: postID })
-            } catch (error) {
-                res.status(403).json({
-                    success: false,
-                    message: 'Post to edit does not exist'
-                })
-            }
+            await PostService.update(postID, { deleted: true }); // <= change delete status to 'true'
+            res.status(200).json({
+                success: true,
+                message: 'User deleted successfully'});
+          } catch (error) {
+            res.status(500).json(error)
+          }
         }
+    }
+
+    // // Delete a single user 
+    // async deletePo(req, res) {
+    //     const postID = req.params.id
+    //     const deleteInfo = {
+    //         post: "Tweet has been deleted by owner",
+    //         ownerID: ""
+    //     }
+
+
+    //     // Check if the book to delete is the database
+    //     // const existingPost = await PostService.findbyID({
+    //     //     _id: postID
+    //     // })
+ 
+    //     // if (!existingPost) res.status(403).json({
+    //     //     success: false,
+    //     //     message: 'Post to edit does not exist'
+    //     // })
+    //     if (postID == deleteInfo){
+    //         res.status(403).json({
+    //             success: false,
+    //             message: 'Post has already been deleted'
+    //         })
+    //     } else {
+    //         try {
+    //             await PostService.findbyID({ _id: postID })
+    //         } catch (error) {
+    //             res.status(403).json({
+    //                 success: false,
+    //                 message: 'Post to edit does not exist'
+    //             })
+    //         }
+    //     }
         
 
-        // deletes Post
-        const softDelete = await PostService.update(postID, deleteInfo)
+    //     // deletes Post
+    //     const softDelete = await PostService.update(postID, deleteInfo)
 
-        // Success Alert
-        res.status(200).json({
-            success: true,
-            message: 'Post deleted successfully',
-            data: softDelete
-        })
-    }
+    //     // Success Alert
+    //     res.status(200).json({
+    //         success: true,
+    //         message: 'Post deleted successfully',
+    //         data: softDelete
+    //     })
+    // }
 
     // Fetch a single Post by ID
     async getOnePost(req, res){
         const infoID = req.params.id
 
-        // Check if the post is the database
+        // Check if the post is the database except deleted
         const existingPost = await PostService.findbyID({
-            _id: infoID
+            _id: infoID, deleted: false
         })
-
-        if (!existingPost) res.status(403).json({
-            success: false,
-            message: 'Post does not not exist'
-        })
-        
-
-        res.status(201).json({
-            success: true,
-            message: 'Post Fetched successfully',
-            data: existingPost
-        })
+        console.log(existingPost)
+        if (!existingPost) {
+            res.status(403).json({
+                success: false,
+                message: 'Post does not not exist'
+            })
+        } else {
+            res.status(201).json({
+                success: true,
+                message: 'Post Fetched successfully',
+                data: existingPost
+            })
+        }
     }
 
     // Fetch all users in the db
     async fetchAll(req, res){
-        const existingPost = await PostService.getAll({})
+        const existingPost = await PostService.getAll({deleted: false})
 
         res.status(200).json({
             success: true,
