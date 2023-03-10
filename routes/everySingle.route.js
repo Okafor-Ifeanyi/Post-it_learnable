@@ -1,4 +1,6 @@
 const router = require('express').Router()
+const validate = require('../middlewares/validate.middleware')
+const UserSchema = require("../schemas/user.schema")
 
 const { createUser,
     updateUser,
@@ -9,8 +11,8 @@ const { createUser,
     } = require('../controllers/user.controller')
 
 // routers for user
-router.post('/', createUser)
-router.patch('/:id', updateUser) 
+router.post('/', validate(UserSchema), createUser)
+router.patch('/:id', validate, updateUser) 
 router.delete('/:id', deleteUser)
 router.post('/username', getUserbyUsername) 
 router.get('/:id', getOneUser)

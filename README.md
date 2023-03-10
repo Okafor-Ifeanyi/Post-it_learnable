@@ -44,8 +44,9 @@ Deleted posts are treated as unexisting to the users on Postit but all initial d
 2.     Recreation of a deleted post will throw an error because posts are unique
 3.     Removal of post uniqueness to accomodate the last stated loophole will cause major redundancy with reason of eg that a client could click their create post button 5* due to a lagging device, slow intrnet... and have the same post created 5*, which would only cause such a client more pain
 
+## **Validations**
 
-
-
+**Joi Validation**
+    `Joi` validation was used as my `schema validator` to validate all `req.body` data sent sent by the user to match my model before being sent to controller.js for use.
 
 
