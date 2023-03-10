@@ -10,7 +10,7 @@ const {
 // routers for post
 router.post('/', createPost)
 router.patch('/:id', updatePost)
-router.delete('/:id', deletePost)
+router.patch('/softdel/:id', deletePost)
 router.get('/:id', getOnePost)
 router.get('/', fetchAll)
 

@@ -11,7 +11,7 @@ const { createUser,
 // routers for user
 router.post('/', createUser)
 router.patch('/:id', updateUser) 
-router.patch('/softdel/:id', deleteUser)
+router.delete('/:id', deleteUser)
 router.post('/username', getUserbyUsername) 
 router.get('/:id', getOneUser)
 router.get('/', fetchAll)

@@ -12,6 +12,11 @@ const Posts = Schema({
         type: Schema.Types.ObjectId,
         ref: 'UserModel',
         required: true,
+    },
+    deleted: {
+        type: "boolean",
+        default: false,
+        required: true,
     }
 },  { timestamps: true })
 
