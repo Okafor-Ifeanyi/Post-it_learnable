@@ -6,35 +6,23 @@ class PostController {
     // create a post
     async createPost(req, res){
         const info = req.body;
-        const extra_text = info.post.length - 280
 
         console.log(info.ownerID.length)
         console.log(req.originalUrl)
 
         // Verify user
         // First if statement solves a Common mistake occurance of passing uncomplete string without going into the system
-        if(info.ownerID.length != 24){
+        try {
+            await UserService.findbyID({ _id: info.ownerID})  
+        } catch (error) {
             res.status(403).json({
-                success: false,
-                message: 'Crosscheck User ID'})
-        } else{
-            try {
-                await UserService.findbyID({ _id: info.ownerID})  
-            } catch (error) {
-                res.status(403).json({
-                    success: false, 
-                    message: 'User not found'})
-            };
-        }
+                success: false, 
+                message: 'User not found', error})
+        };
 
 
         // Validate and verify Post (Twitter Tweet Standard)
         // First If statment solves a Common mistake occurance of exceeding string limit without sending a request to server db 
-        if(info.post.length > 280){ 
-            res.status(403).json({
-                success: false,
-                message: `Max password length exceded by "${extra_text}" characters`})
-        } 
 
         try {
             await PostService.findbyID({ post: info.post, deleted: false })  
@@ -62,14 +50,18 @@ class PostController {
         console.log(updateData)
         
          // check if use does not exist
-         const existingPost = await PostService.findbyID({
-            _id: infoID, deleted: false
-        })
+         try {
+            await PostService.findbyID({ _id: infoID, deleted: false })
+         } catch (error) {
+            res.status(403).json({
+                success: false,
+                message: 'Post does not exists',
+                error: error
+            })
+         }
+        //  const existingPost = 
         
-        if(!existingPost)res.status(403).json({
-             success: false,
-             message: 'Post does not exists'
-         })
+        // if(!existingPost)
          
         // Since the username is a unique key, we have to make it consistent 
         // if (existingPost) {
