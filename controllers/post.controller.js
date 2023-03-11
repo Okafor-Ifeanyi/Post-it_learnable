@@ -109,51 +109,6 @@ class PostController {
         }
     }
 
-    // // Delete a single user 
-    // async deletePo(req, res) {
-    //     const postID = req.params.id
-    //     const deleteInfo = {
-    //         post: "Tweet has been deleted by owner",
-    //         ownerID: ""
-    //     }
-
-
-    //     // Check if the book to delete is the database
-    //     // const existingPost = await PostService.findbyID({
-    //     //     _id: postID
-    //     // })
- 
-    //     // if (!existingPost) res.status(403).json({
-    //     //     success: false,
-    //     //     message: 'Post to edit does not exist'
-    //     // })
-    //     if (postID == deleteInfo){
-    //         res.status(403).json({
-    //             success: false,
-    //             message: 'Post has already been deleted'
-    //         })
-    //     } else {
-    //         try {
-    //             await PostService.findbyID({ _id: postID })
-    //         } catch (error) {
-    //             res.status(403).json({
-    //                 success: false,
-    //                 message: 'Post to edit does not exist'
-    //             })
-    //         }
-    //     }
-        
-
-    //     // deletes Post
-    //     const softDelete = await PostService.update(postID, deleteInfo)
-
-    //     // Success Alert
-    //     res.status(200).json({
-    //         success: true,
-    //         message: 'Post deleted successfully',
-    //         data: softDelete
-    //     })
-    // }
 
     // Fetch a single Post by ID
     async getOnePost(req, res){

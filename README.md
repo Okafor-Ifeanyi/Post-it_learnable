@@ -49,4 +49,20 @@ Deleted posts are treated as unexisting to the users on Postit but all initial d
 **Joi Validation**
     `Joi` validation was used as my `schema validator` to validate all `req.body` data sent sent by the user to match my model before being sent to controller.js for use.
 
+**JWT**
+    `jwt token` for `login` authorization and specification too
+>   installed `jsonwebtoken`
+
+## POSTMAN Features Adopted
+    
+**Environment**
+    Using the postman environment helped keep url paths neat and simple
+    _env name_ => `DEV: post-it`
+    _variable_ => `USER` // {{USER}}
+    _initial value_ => `localhost:3838/api/v1/user/`
+
+**Set an Environment Variable**
+    Authoriazation authentication is be very stressfull manually and setting
+    your `jwt_token` to this an _env variable_ automates it. 
+> reference [Youtube Video - time @7:46:45](https://youtu.be/0sOvCWFmrtA)
 
