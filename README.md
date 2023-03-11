@@ -56,13 +56,12 @@ Deleted posts are treated as unexisting to the users on Postit but all initial d
 ## POSTMAN Features Adopted
     
 **Environment**
-    Using the postman environment helped keep url paths neat and simple
-    _env name_ => `DEV: post-it`
-    _variable_ => `USER` // {{USER}}
-    _initial value_ => `localhost:3838/api/v1/user/`
+    Used postman environment to keep url paths neat and simple
+-   _env name_ => `DEV: post-it`
+-   _variable_ => `USER` // {{USER}}
+-   _initial value_ => `localhost:3838/api/v1/user/`
 
 **Set an Environment Variable**
-    Authoriazation authentication is be very stressfull manually and setting
-    your `jwt_token` to this an _env variable_ automates it. 
+    Automate authorizstion setting by setting your `jwt_token` to this an _env variable_ 
 > reference [Youtube Video - time @7:46:45](https://youtu.be/0sOvCWFmrtA)
 
