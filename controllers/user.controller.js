@@ -1,6 +1,41 @@
 const service = require('../services/user.service');
+const { generateToken } = require("../utils/jwt.util")
 
 class UserController {
+
+    // login a user
+    async login(req, res, next) {
+        const {email, password} = req.body;
+        // console.log(email, password);
+
+        try {
+            const user = await service.findbyID({ email : email });
+            
+            if (!user) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid email',
+                })
+            }
+            
+            const result = await user.matchPassword(password)
+
+            if(!result){
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid Password',
+                })
+            }
+            const token = generateToken({ _id: user._id })
+
+            res.json({ token: token, "token Type": "Bearer"  })
+        } catch (error) {
+            return res.status(401).json({
+                success: false,
+                message: 'User not found',
+            })
+        }
+    }
 
     // create a user
     async createUser(req, res){

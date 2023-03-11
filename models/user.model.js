@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 // const { isEmail } = require('validator');
 const bcrypt = require('bcrypt');
 
-const User = mongoose.Schema({
+const User = new mongoose.Schema({
     username: {
         type: String,
         required: true,
@@ -39,6 +39,18 @@ User.pre('save', async function (next) {
     this.password = await bcrypt.hash(this.password, salt);
     next();
 })
+
+
+User.methods.matchPassword  = async function (password) {
+    if(!password) throw new Error("Password is missing, can not compare")
+
+    try{
+        const result = await bcrypt.compare(password, this.password)
+        return result;
+    } catch (e) {
+        console.log('Error while comparing password!', e.message)
+    }
+}
 
 UserModel = mongoose.model("User", User)
 module.exports = UserModel
