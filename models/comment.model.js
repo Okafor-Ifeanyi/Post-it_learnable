@@ -1,17 +1,21 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
-const Posts = new Schema({
-    post: { 
+const comments = new Schema({
+    comment: { 
         type: 'string',
-        unique: [true, "Post already exists"], 
-        required: [true, "title needed to create post"], 
+        required: [true, "title needed to create comment"], 
         maxLength: 280 
     },
     ownerID: {
         type: Schema.Types.ObjectId,
         ref: 'UserModel',
         required: true,
+    },
+    postID : {
+        type: Schema.Types.ObjectId,
+        ref: 'PostModel',
+        required: true, 
     },
     deleted: {
         type: "boolean",
@@ -20,5 +24,5 @@ const Posts = new Schema({
     }
 },  { timestamps: true })
 
-PostModel = mongoose.model('Post', Posts)
-module.exports = PostModel
+commentModel = mongoose.model('comment', comments)
+module.exports = commentModel

@@ -10,102 +10,65 @@ class PostController {
         console.log(info.ownerID.length)
         console.log(req.originalUrl)
 
-        // Verify user
-        // First if statement solves a Common mistake occurance of passing uncomplete string without going into the system
-        try {
-            await UserService.findbyID({ _id: info.ownerID})  
-        } catch (error) {
-            res.status(403).json({
-                success: false, 
-                message: 'User not found', error})
-        };
-
-
         // Validate and verify Post (Twitter Tweet Standard)
-        // First If statment solves a Common mistake occurance of exceeding string limit without sending a request to server db 
-
-        try {
-            await PostService.findbyID({ post: info.post, deleted: false })  
-        } catch (error) {
-            res.status(403).json({
-                success: false,
-                message: error})
-        };
-
-        // Create Post
-        const newPost = await PostService.createPost(info)
-
-        // Success Alert
-        res.status(200).json({
-            success: true,
-            message: 'User created',
-            data: newPost
-        })
+        try{
+            // Verify post
+            const post = await PostService.findbyID({ post: info.post, deleted: false })
+            if (post){
+                throw { status: 403, message: 'Post already exists' };
+            }
+            // Create post
+            const newPost = await PostService.createPost(info)
+            // Success Alert
+            return res.status(200).json({ success: true, message: 'Post created', data: newPost })
+        } 
+        catch (error) {
+            return res.status(403).json({ success: false, message: error })           
+        }
     }
 
     // Update a user
     async updatePost(req, res){ 
         const infoID = req.params.id
         const updateData = req.body
-        console.log(updateData)
-        
-         // check if use does not exist
-         try {
-            await PostService.findbyID({ _id: infoID, deleted: false })
-         } catch (error) {
-            res.status(403).json({
-                success: false,
-                message: 'Post does not exists',
-                error: error
-            })
-         }
-        //  const existingPost = 
-        
-        // if(!existingPost)
-         
-        // Since the username is a unique key, we have to make it consistent 
-        // if (existingPost) {
-        //     const available = await PostService.findbyID({
-        //         _id: updateData.id
-        //     })
+        const ownerId = req.body.ownerId 
+        console.log(ownerId)
 
-        //     if (available._id.toString() == existingPost._id.toString()){
-        //         res.status(403).json({
-        //             success: false,
-        //             message: 'User with update name already exists'
-        //         })
-        //     }
-        // }
+        try {
+            // check if post exists
+            const post = await PostService.findbyID({ _id: infoID, deleted: false })
 
-        // Updates Post
-        const updatedData = await PostService.update(infoID, updateData)
+            // If post not found throw error
+            if (!post) {
+                throw { status: 404, message: 'Post not found' };
+            }
 
-        res.status(200).json({
-            success: true,
-            message: 'Body updated successfully',
-            data: updatedData
-        })
+            const updatedData = await PostService.update(infoID, updateData)
+            return res.status(200).json({ success: true, message: 'Body updated successfully', data: updatedData })
+
+        } catch (error) {
+            return res.status(403).json({ success: false, error: error })
+        }        
     }
 
     // Delete a single post
     async deletePost(req, res) {
         const postID = req.params.id
         
-        const category = await PostService.findbyID({ _id: postID, deleted: false });
-        if (!category || category.deleted == true) {
-            res.status(404).json({
-                success: false,
-                message: 'Post does not exist'
-            })
-        } else { 
-            try {
+        try {
+            // Check if the post is the database except deleted
+            const category = await PostService.findbyID({ _id: postID, deleted: false });
+
+            if (!category || category.deleted == true) {
+                throw { success: false, message: 'post does not exist'}
+            } 
+
             await PostService.update(postID, { deleted: true }); // <= change delete status to 'true'
-            res.status(200).json({
-                success: true,
-                message: 'User deleted successfully'});
-          } catch (error) {
-            res.status(500).json(error)
-          }
+            
+            return res.status(200).json({ success: true, message: 'Post deleted successfully'});
+        } 
+        catch (error) {
+            res.status(403).json({ success: false, message: error })                       
         }
     }
 
@@ -113,35 +76,45 @@ class PostController {
     // Fetch a single Post by ID
     async getOnePost(req, res){
         const infoID = req.params.id
-        
+
         // Check if the post is the database except deleted
-        const existingPost = await PostService.findbyID({
-            _id: infoID, deleted: false
-        })
-        console.log(existingPost)
-        if (!existingPost) {
-            res.status(403).json({
-                success: false,
-                message: 'Post does not not exist'
+        try{
+            const existingpost = await PostService.findbyID({
+                _id: infoID, deleted: false
             })
-        } else {
-            res.status(201).json({
-                success: true,
-                message: 'Post Fetched successfully',
-                data: existingPost
-            })
+
+            if (!existingpost) {
+                throw { success: false, message: 'Post does not not exist'}
+
+            } else {
+                res.status(201).json({ success: true, message: 'Post Fetched successfully', data: existingpost })
+            }
+        } catch (error) {
+            res.status(403).json({ success: false, message: error })                       
         }
     }
 
-    // Fetch all users in the db
+    // Fetch all posts in the db
     async fetchAll(req, res){
-        const existingPost = await PostService.getAll({deleted: false})
+        try{
+            const existingPost = await PostService.getAll({deleted: false})
+            res.status(200).json({ success: true, message: 'comment fetched successfully', data: existingPost }) 
 
-        res.status(200).json({
-            success: true,
-            message: 'Post fetched successfully',
-            data: existingPost
-        })
+        } catch (error) {
+            res.status(403).json({ success: false, message: error })                       
+        }
+    }
+
+    // Fetch all deleted posts in the db
+    async deletedPosts(req, res){
+        // Check if the comment is the database except deleted
+        try{
+            const existingPost = await PostService.getAll({deleted: true})
+
+            res.status(200).json({ success: true, message: 'comment fetched successfully', data: existingPost})
+        } catch (error) {
+            res.status(403).json({ success: false, message: error })                       
+        }
     }
 }
 
