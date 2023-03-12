@@ -1,6 +1,6 @@
 const { verifyToken } = require('../utils/jwt.util')
 
-export const isAuth = (req, res, next) => {
+const isAuth = (req, res, next) => {
     let token = req.params.token;
     
     if( !req.headers.authorization || !req.headers.authorization.startsWith('Bearer')) {
@@ -17,3 +17,5 @@ export const isAuth = (req, res, next) => {
     req.user = { _id: decode?._id }
     next();
 };
+
+module.exports = { isAuth }
