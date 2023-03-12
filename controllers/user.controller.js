@@ -28,7 +28,7 @@ class UserController {
             }
             const token = generateToken({ _id: user._id })
 
-            res.json({ token: token, "token Type": "Bearer"  })
+            res.json({ token: token, "token Type": "Bearer", "user_id": user._id  })
         } catch (error) {
             return res.status(401).json({
                 success: false,
@@ -113,29 +113,26 @@ class UserController {
         })
     }
 
-    // Delete a single user 
+    // Delete a single user - Soft delete
     async deleteUser(req, res) {
         const userID = req.params.id
-
-        // Check if the book to delete is the database
-        const existingUser = await service.findbyID({
-            _id: userID
-        })
- 
-        if (!existingUser) res.status(403).json({
-            success: false,
-            message: 'User to edit does not exist'
-        })
-
-        // Deletes User
-        const deleteUser = await service.delete(userID)
-
-        // Success Alert
-        res.status(200).json({
-            success: true,
-            message: 'User deleted successfully',
-            data: deleteUser
-        })
+        post
+        const category = await service.findbyID({ _id: userID, deleted: false });
+        if (!category || category.deleted == true) {
+            res.status(404).json({
+                success: false,
+                message: 'User does not exist'
+            })
+        } else { 
+            try {
+            await service.update(userID, { deleted: true }); // <= change delete status to 'true'
+            res.status(200).json({
+                success: true,
+                message: 'User deleted successfully'});
+          } catch (error) {
+            res.status(500).json(error)
+          }
+        }
     }
 
     // Fetch a single user by username
@@ -147,12 +144,12 @@ class UserController {
             username: info.username
         })
 
-        if (!existingUser) res.status(403).json({
+        if (!existingUser) return res.status(403).json({
             success: false,
             message: 'User does not not exist'
         })
 
-        res.status(201).json({
+        return res.status(201).json({
             success: true,
             message: 'User Fetched successfully',
             data: existingUser
