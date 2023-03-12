@@ -57,5 +57,12 @@ User.methods.matchPassword  = async function (password) {
     }
 }
 
+User.methods.toJSON = function () {
+    const userData = this.toObject(); 
+ 
+    delete userData.password;
+    return userData; 
+  };
+
 UserModel = mongoose.model("User", User)
 module.exports = UserModel

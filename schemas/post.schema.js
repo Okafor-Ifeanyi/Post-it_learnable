@@ -6,4 +6,9 @@ const PostSchema = joi.object()
         ownerID: joi.string().required().length(24)
     });
 
-module.exports = PostSchema
+const UpdatePostSchema = joi.object()
+    .keys({
+        post: joi.string().required().max(280),
+    });
+
+module.exports = { PostSchema, UpdatePostSchema };

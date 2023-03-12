@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const app = express()
 const router = require('./routes/index.route')
+const errorHandler = require('./middlewares/error.middleware')
 
 require('dotenv').config()
 
@@ -9,6 +10,8 @@ app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 
 app.use('/api/v1/', router)
+
+app.use(errorHandler)
 
 mongoose.connect(process.env.MONGODB_URI_offline, {
     useNewUrlParser: true, 
