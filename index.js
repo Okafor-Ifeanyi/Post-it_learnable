@@ -13,7 +13,7 @@ app.use('/api/v1/', router)
 
 app.use(errorHandler)
 
-mongoose.connect(process.env.MONGODB_URI_offline, {
+mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true, 
     useUnifiedTopology: true,
     family: 4,
