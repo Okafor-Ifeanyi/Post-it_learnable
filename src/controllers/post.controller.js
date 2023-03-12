@@ -1,5 +1,6 @@
 const PostService = require('../services/post.service')
-const UserService = require('../services/user.service')
+const { isAdmin } = require("../middlewares/auth.middleware")
+
 
 class PostController {
     
@@ -31,8 +32,9 @@ class PostController {
     async updatePost(req, res){ 
         const infoID = req.params.id
         const updateData = req.body
-        const ownerId = req.body.ownerId 
-        console.log(ownerId)
+        const ownerID = req.body.ownerId 
+        let token = req.params.token;
+        
 
         try {
             // check if post exists
@@ -43,9 +45,28 @@ class PostController {
                 throw { status: 404, message: 'Post not found' };
             }
 
-            const updatedData = await PostService.update(infoID, updateData)
-            return res.status(200).json({ success: true, message: 'Body updated successfully', data: updatedData })
+            // Since the username is a unique key, we have to make it consistent 
+            if (existingUser) {
+                const available = await PostService.findbyID({ post: updateData.post, deleted: false })
+                
+                // throws an error if the username selected is taken
+                if (available){ 
+                    return res.status(403).json({ success: false, message: 'Post with update name already exists'})
+                }
+            }
 
+            // extract token and get current user
+            token = req.headers.authorization.split(' ')[1]
+            const currentUser_id = decodeToken(token)
+            
+            // Authorize only admin and owner of acc to feature
+            if ( currentUser_id == ownerID || isAdmin) {
+                const updatedData = await PostService.update(infoID, updateData)
+                return res.status(200).json({ success: true, message: 'Body updated successfully', data: updatedData })
+            } else {
+                res.status(403).json({ success: false, message: 'Unauthorized User' })
+            }
+            
         } catch (error) {
             return res.status(403).json({ success: false, error: error })
         }        
@@ -54,18 +75,27 @@ class PostController {
     // Delete a single post
     async deletePost(req, res) {
         const postID = req.params.id
+        let token = req.params.token;
         
         try {
             // Check if the post is the database except deleted
             const category = await PostService.findbyID({ _id: postID, deleted: false });
-
+            console.log(category)
             if (!category || category.deleted == true) {
                 throw { success: false, message: 'post does not exist'}
             } 
 
-            await PostService.update(postID, { deleted: true }); // <= change delete status to 'true'
+            // extract token and get current user
+            token = req.headers.authorization.split(' ')[1]
+            const currentUser_id = decodeToken(token)
             
-            return res.status(200).json({ success: true, message: 'Post deleted successfully'});
+            // Authorize only admin and owner of acc to feature
+            if ( currentUser_id == category.ownerID || isAdmin ) {
+                await PostService.update(postID, { deleted: true }); // <= change delete status to 'true'
+                return res.status(200).json({ success: true, message: 'Post deleted successfully'});
+            } else{
+                res.status(403).json({ success: false, message: 'Unauthorized User' })
+            }
         } 
         catch (error) {
             res.status(403).json({ success: false, message: error })                       
@@ -95,7 +125,7 @@ class PostController {
     }
 
     // Fetch all posts in the db
-    async fetchAll(req, res){
+    async fetchAllPosts(req, res){
         try{
             const existingPost = await PostService.getAll({deleted: false})
             res.status(200).json({ success: true, message: 'comment fetched successfully', data: existingPost }) 
