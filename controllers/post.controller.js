@@ -87,7 +87,7 @@ class PostController {
         })
     }
 
-    // Delete a single user
+    // Delete a single post
     async deletePost(req, res) {
         const postID = req.params.id
         
@@ -113,7 +113,7 @@ class PostController {
     // Fetch a single Post by ID
     async getOnePost(req, res){
         const infoID = req.params.id
-
+        
         // Check if the post is the database except deleted
         const existingPost = await PostService.findbyID({
             _id: infoID, deleted: false

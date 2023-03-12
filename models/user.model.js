@@ -29,6 +29,11 @@ const User = new mongoose.Schema({
         type: Boolean,
         default: false,
         required: true
+    },
+    deleted: {
+        type: "boolean",
+        default: false,
+        required: true,
     }
     // createdAt: {timestamp: true}
 },  { timestamps: true });
