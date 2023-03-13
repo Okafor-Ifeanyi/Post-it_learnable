@@ -1,8 +1,8 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const app = express()
-const router = require('./routes/index.route')
-const errorHandler = require('./middlewares/error.middleware')
+const router = require('./src/routes/index.route')
+const errorHandler = require('./src/middlewares/error.middleware')
 
 require('dotenv').config()
 
@@ -13,7 +13,7 @@ app.use('/api/v1/', router)
 
 app.use(errorHandler)
 
-mongoose.connect(process.env.MONGODB_URI_offline, {
+mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true, 
     useUnifiedTopology: true,
     family: 4,

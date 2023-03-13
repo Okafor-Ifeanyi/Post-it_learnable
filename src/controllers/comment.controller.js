@@ -1,6 +1,6 @@
 const PostService = require('../services/post.service')
-const UserService = require('../services/user.service')
 const commentService = require('../services/comment.service')
+const { isAdmin } = require("../middlewares/auth.middleware")
 
 
 class commentController {
@@ -31,8 +31,9 @@ class commentController {
     async updateComment(req, res){ 
         const infoID = req.params.id
         const updateData = req.body
-        console.log(updateData)
+        let token = req.params.token;
         
+
         try{
             // Verify comment
             const comment = await commentService.findbyID({ _id: infoID, deleted: false })
@@ -40,10 +41,20 @@ class commentController {
                 throw{ success: false, message: 'comment does not exists', error: error }
             }
 
-            // Updates comment
-            const updatedData = await commentService.update(infoID, updateData)
-
-            return res.status(200).json({ success: true, message: 'Body updated successfully', data: updatedData })
+            // extract token and get current user
+            token = req.headers.authorization.split(' ')[1]
+            const currentUser_id = decodeToken(token)
+            
+            // Authorize only admin and owner of acc to feature
+            if ( currentUser_id == comment.ownerID || isAdmin) {
+                const updatedData = await commentService.update(infoID, updateData) //  Updates comment
+                return res.status(200).json({ 
+                    success: true, 
+                    message: 'Body updated successfully', 
+                    data: updatedData })
+            } else {
+                    res.status(403).json({ success: false, message: 'Unauthorized User' })
+            }
         } catch (error) {
             return res.status(403).json({ success: false, message: error })                       
         }
@@ -53,6 +64,7 @@ class commentController {
     // Delete a single comment
     async deleteComment(req, res) {
         const commentID = req.params.id
+        let token = req.params.token;
         
         try{
             // Check if the comment is the database except deleted
@@ -60,10 +72,20 @@ class commentController {
 
             if (!category || category.deleted == true) {
                 throw { success: false, message: 'comment does not exist'}
-            } 
-            await commentService.update(commentID, { deleted: true }); // <= change delete status to 'true'
+            }
+            // extract token and get current user
+            token = req.headers.authorization.split(' ')[1]
+            const currentUser_id = decodeToken(token)
             
-            res.status(200).json({ success: true, message: 'Post deleted successfully'});
+            // Authorize only admin and owner of acc to feature
+            if ( currentUser_id == comment.ownerID || isAdmin) { 
+                await commentService.update(commentID, { deleted: true }); // <= change delete status to 'true'
+                res.status(200).json({ 
+                    success: true, 
+                    message: 'Post deleted successfully'});
+            } else {
+                res.status(403).json({ success: false, message: 'Unauthorized User' })
+            }
         } catch (error) {
             res.status(403).json({ success: false, message: error })                       
         }
@@ -94,7 +116,7 @@ class commentController {
     }
 
     // Fetch all comments in the db
-    async fetchAll(req, res){
+    async fetchAllComments(req, res){
         // Check if the comment is the database except deleted
         try{
             const existingcomment = await commentService.getAll({deleted: false})
