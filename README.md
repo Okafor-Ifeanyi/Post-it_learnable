@@ -16,7 +16,7 @@
 > [Postman Docs](https://documenter.getpostman.com/view/19026826/2s93JtRPcU)
 
 ## Model Diagram
-    https://dbdiagram.io/d/640748ba296d97641d861a12
+>    [Diagrams on dbdiagrams.io](https://dbdiagram.io/d/640748ba296d97641d861a12
 
 ## Design Pattern
     For my post-it i used `layered structure` cause it gave me the feeling of
