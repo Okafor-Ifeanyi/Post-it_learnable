@@ -6,7 +6,6 @@ const validate = (schema) => {
     return async (req, res, next) => {
         const { error } = await schema.validate(req.body, { abortEarly:false, allowUnknown:true });
         const valid = error == null
-        // console.log('message:', value.error)
         if ( valid ) {
             next();
         } else {

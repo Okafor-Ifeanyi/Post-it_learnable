@@ -48,7 +48,7 @@ class UserController {
             }
             // To generate the avatar and image tag(holds avatarUrl & email)
             const { avatarUrl } = await generateRandomAvatar(info.email)
-            const imageTag = '<img src="${avatarUrl}" alt="Avatar image for "${email}" " />';
+            const imageTag = `<img src= ${avatarUrl}  alt= Avatar image for ${info.username}  />`;
 
             // creates a new user (... => spreads out all the data )
             const newUser = await service.createUser({ ...info, avatarUrl, imageTag })
@@ -56,7 +56,6 @@ class UserController {
             return res.status(200).json({ success: true, message: 'User created', data: newUser })
         } 
         catch (error) {
-            console.log(error)
             return res.status(403).json({ success: false, message: error })                       
         }
         
@@ -91,19 +90,21 @@ class UserController {
             token = req.headers.authorization.split(' ')[1]
             const currentUser_id = decodeToken(token)
             
+            const match = currentUser_id == infoID
+
             // Authorize only admin and owner of acc to feature
-            if ( currentUser_id == infoID || isAdmin) {
+            if ( match == true ) {
                 const updatedData = await service.update(infoID, updateData)
 
                 res.status(200).json({ success: true, message: 'Body updated successfully', data: updatedData })
             
             } else {
-                res.status(403).json({ success: false, message: 'Unauthorized User' })
+                res.status(401).json({ success: false, message: 'Unauthorized User' })
             }
             
         } 
         catch (error) {
-            res.status(403).json({ success: false, message: error })                       
+            res.status(401).json({ success: false, message: error })                       
         }
          
     }
@@ -123,11 +124,10 @@ class UserController {
             
             // extract token and get current user
             token = req.headers.authorization.split(' ')[1]
-            
             const currentUser_id = decodeToken(token)
-            
+
             // Authorize only admin and owner of acc to feature
-            if ( currentUser_id == userID || isAdmin ) {
+            if ( currentUser_id == userID ) {
                 await service.update(userID, { deleted: true }); // <= change delete status to 'true'
 
                 return res.status(200).json({ 
@@ -140,7 +140,6 @@ class UserController {
         catch (error) {
             res.status(403).json({ success: false, message: error })                       
         }
-        
     }
 
     // Fetch a single user by username
