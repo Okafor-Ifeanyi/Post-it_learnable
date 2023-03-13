@@ -13,7 +13,8 @@
 >   Post-it is ready for use
 
 ## Postman Documentation
-    [Postman Docs](https://documenter.getpostman.com/view/19026826/2s93JtRPcU)
+[Postman Docs](https://documenter.getpostman.com/view/19026826/2s93JtRPcU)
+
 ]
 
 ## Model Diagram
