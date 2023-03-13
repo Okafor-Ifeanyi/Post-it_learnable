@@ -84,8 +84,8 @@ Deleted posts are treated as unexisting to the users on Postit but all initial d
 
 ## User AvatarUrl / Image Tag
 A special feature was adopted in this api, giving a unique avatar to all users with information drafter
-from their provided details, this feature was made possible using [`dicebear api`](https://www.dicebear.com/) to generate random avatars and return an `avatar url`. Image Tag was included in the user model to hold a `html img tag` for the avatar url.
+from their provided details, this feature was made possible using [`dicebear api`](https://www.dicebear.com/) to generate random avatars and return an `avatar url`. Image Tag was included in the user model to hold a `html` img tag for the avatar url.
 
 ![Avatar](https://api.dicebear.com/5.x/pixel-art-neutral/svg?seed=prince247-98t6l-gmail-aguyj-com&size=200&radius=50)
 
-> Image Tag: **"<img src=\"${avatarUrl}\" alt=\"Avatar image for profile picture\" />"**
+> img_tag: **"<img src=\"${avatarUrl}\" alt=\"Avatar image for profile picture\" />"**
