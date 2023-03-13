@@ -1,5 +1,6 @@
 const joi = require('joi')
 
+// Joi Validation schema used to verify req data
 const RegisterSchema = joi.object()
     .keys({
         username: joi.string().required(),

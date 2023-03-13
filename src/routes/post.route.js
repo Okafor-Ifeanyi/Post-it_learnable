@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const validate = require('../middlewares/validate.middleware')
-const { PostSchema, UpdatePostSchema } = require("../schemas/post.schema")
+const PostSchema = require("../schemas/post.schema")
 const { isAuth, isAdmin } = require("../middlewares/auth.middleware")
 
 const { 
@@ -17,7 +17,7 @@ router.get('/:id', getOnePost)
 router.get('/', fetchAllPosts)
 router.post('/', validate(PostSchema), isAuth, createPost)
 router.patch('/del/:id', isAuth, deletePost)
-router.patch('/:id', validate(UpdatePostSchema), isAuth, updatePost)
+router.patch('/:id', validate(PostSchema), isAuth, updatePost)
 
 
 module.exports = router

@@ -1,5 +1,6 @@
 const PostService = require('../services/post.service')
-const { isAdmin } = require("../middlewares/auth.middleware")
+const { decodeToken } = require("../utils/jwt.util")
+
 
 
 class PostController {
@@ -7,9 +8,7 @@ class PostController {
     // create a post
     async createPost(req, res){
         const info = req.body;
-
-        console.log(info.ownerID.length)
-        console.log(req.originalUrl)
+        let token = req.params.token;
 
         // Validate and verify Post (Twitter Tweet Standard)
         try{
@@ -18,8 +17,16 @@ class PostController {
             if (post){
                 throw { status: 403, message: 'Post already exists' };
             }
+
+            // extract token and get current user
+            token = req.headers.authorization.split(' ')[1]
+            const currentUser_id = decodeToken(token)
+
+            // Owner ID == current user (If you think about it)
+            const ownerID = currentUser_id
+            
             // Create post
-            const newPost = await PostService.createPost(info)
+            const newPost = await PostService.createPost({...info, ownerID})
             // Success Alert
             return res.status(200).json({ success: true, message: 'Post created', data: newPost })
         } 
@@ -32,7 +39,6 @@ class PostController {
     async updatePost(req, res){ 
         const infoID = req.params.id
         const updateData = req.body
-        const ownerID = req.body.ownerId 
         let token = req.params.token;
         
 
@@ -46,9 +52,9 @@ class PostController {
             }
 
             // Since the username is a unique key, we have to make it consistent 
-            if (existingUser) {
+            if (post) {
                 const available = await PostService.findbyID({ post: updateData.post, deleted: false })
-                
+
                 // throws an error if the username selected is taken
                 if (available){ 
                     return res.status(403).json({ success: false, message: 'Post with update name already exists'})
@@ -59,10 +65,16 @@ class PostController {
             token = req.headers.authorization.split(' ')[1]
             const currentUser_id = decodeToken(token)
             
+            const ownerID = post.ownerID.toString()
             // Authorize only admin and owner of acc to feature
-            if ( currentUser_id == ownerID || isAdmin) {
+            if ( currentUser_id == ownerID ) {
                 const updatedData = await PostService.update(infoID, updateData)
-                return res.status(200).json({ success: true, message: 'Body updated successfully', data: updatedData })
+
+                return res.status(200).json({ 
+                    success: true, 
+                    message: 'Body updated successfully', 
+                    data: updatedData })
+                    
             } else {
                 res.status(403).json({ success: false, message: 'Unauthorized User' })
             }
@@ -80,7 +92,7 @@ class PostController {
         try {
             // Check if the post is the database except deleted
             const category = await PostService.findbyID({ _id: postID, deleted: false });
-            console.log(category)
+            
             if (!category || category.deleted == true) {
                 throw { success: false, message: 'post does not exist'}
             } 
@@ -90,7 +102,7 @@ class PostController {
             const currentUser_id = decodeToken(token)
             
             // Authorize only admin and owner of acc to feature
-            if ( currentUser_id == category.ownerID || isAdmin ) {
+            if ( currentUser_id == category.ownerID ) {
                 await PostService.update(postID, { deleted: true }); // <= change delete status to 'true'
                 return res.status(200).json({ success: true, message: 'Post deleted successfully'});
             } else{

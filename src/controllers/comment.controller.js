@@ -1,6 +1,7 @@
 const PostService = require('../services/post.service')
 const commentService = require('../services/comment.service')
-const { isAdmin } = require("../middlewares/auth.middleware")
+// const { isAdmin } = require("../middlewares/auth.middleware")
+const { decodeToken } = require("../utils/jwt.util")
 
 
 class commentController {
@@ -8,17 +9,27 @@ class commentController {
     // create a comment
     async createComment(req, res){
         const info = req.body;
-        const token = req.params.token
-        console.log(token)
+        let token = req.params.token;
+
+        // const token = req.params.token
+        
 
         try{
             // Verify post
-            const post = await PostService.findbyID({ _id: info.postID, delete: false })
+            const post = await PostService.findbyID({ _id: info.postID, deleted: false });
+            
             if (!post){
                 throw { status: 404, message: 'Post not found' };
             }
-            // Create comment
-            const newcomment = await commentService.createcomment(info)
+
+            // extract token and get current user
+            token = req.headers.authorization.split(' ')[1]
+            const currentUser_id = decodeToken(token)
+
+            const ownerID = currentUser_id;
+            
+            const newcomment = await commentService.createcomment({...info, ownerID})
+            // const newcomment = await commentService.createcomment(info)
             // Success Alert
             return res.status(200).json({ success: true, message: 'Comment created', data: newcomment })
         } catch (error) {
@@ -32,13 +43,13 @@ class commentController {
         const infoID = req.params.id
         const updateData = req.body
         let token = req.params.token;
-        
 
         try{
             // Verify comment
             const comment = await commentService.findbyID({ _id: infoID, deleted: false })
+
             if(!comment) {
-                throw{ success: false, message: 'comment does not exists', error: error }
+                throw { status: false, message: 'Comment not found' };
             }
 
             // extract token and get current user
@@ -46,7 +57,7 @@ class commentController {
             const currentUser_id = decodeToken(token)
             
             // Authorize only admin and owner of acc to feature
-            if ( currentUser_id == comment.ownerID || isAdmin) {
+            if ( currentUser_id == comment.ownerID) {
                 const updatedData = await commentService.update(infoID, updateData) //  Updates comment
                 return res.status(200).json({ 
                     success: true, 
@@ -78,7 +89,7 @@ class commentController {
             const currentUser_id = decodeToken(token)
             
             // Authorize only admin and owner of acc to feature
-            if ( currentUser_id == comment.ownerID || isAdmin) { 
+            if ( currentUser_id == category.ownerID ) { 
                 await commentService.update(commentID, { deleted: true }); // <= change delete status to 'true'
                 res.status(200).json({ 
                     success: true, 
@@ -143,9 +154,3 @@ class commentController {
 }
 
 module.exports = new commentController()
-
-try{
-            
-} catch (error) {
-    res.status(200).json({ success: false, message: error })                       
-}
