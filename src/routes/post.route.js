@@ -8,13 +8,13 @@ const {
     updatePost,
     deletePost,
     getOnePost,
-    fetchAll,
+    fetchAllPosts,
     deletedPosts } = require('../controllers/post.controller')
 
 // routers for post
 router.get('/del/', isAuth, isAdmin, deletedPosts)
 router.get('/:id', getOnePost)
-router.get('/', fetchAll)
+router.get('/', fetchAllPosts)
 router.post('/', validate(PostSchema), isAuth, createPost)
 router.patch('/del/:id', isAuth, deletePost)
 router.patch('/:id', validate(UpdatePostSchema), isAuth, updatePost)

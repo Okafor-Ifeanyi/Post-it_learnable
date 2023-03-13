@@ -31,8 +31,16 @@ const User = new mongoose.Schema({
         required: true
     },
     deleted: {
-        type: "boolean",
+        type: Boolean,
         default: false,
+        required: true,
+    },
+    avatarUrl :{
+        type: String,
+        required: true,
+    },
+    imageTag :{
+        type: String,
         required: true,
     }
     // createdAt: {timestamp: true}

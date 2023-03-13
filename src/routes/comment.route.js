@@ -8,13 +8,13 @@ const {
     updateComment,
     deleteComment,
     getOneComment,
-    fetchAll,
+    fetchAllComments,
     deletedComments } = require('../controllers/comment.controller')
 
 // routers for post
 router.get('/del/', isAuth, isAdmin, deletedComments)
 router.get('/:id', getOneComment)
-router.get('/', fetchAll)
+router.get('/', fetchAllComments)
 router.post('/', validate(CommentSchema), isAuth, createComment)
 router.patch('/:id', validate(CommentSchema), isAuth, updateComment)
 router.patch('/del/:id', isAuth, deleteComment)

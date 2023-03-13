@@ -1,13 +1,13 @@
 const service = require('../services/user.service');
-const { generateToken, decode } = require("../utils/jwt.util")
-const { getCurrentUser } = require("../middlewares/auth.middleware")
+const { generateToken, decodeToken } = require("../utils/jwt.util")
+const { isAdmin } = require("../middlewares/auth.middleware")
+const generateRandomAvatar = require("../utils/avatar.util")
 
 class UserController {
 
     // login a user
     async login(req, res, next) {
         const {email, password} = req.body;
-        // console.log(email, password);
 
         try {
             const user = await service.findbyID({ email : email, deleted: false });
@@ -47,12 +47,15 @@ class UserController {
                 return res.status(403).json({ success: false, message: 'User already exists' })
             }
 
+            const { avatarUrl, imageTag } = await generateRandomAvatar(info.email)
+            // console.log(avatar, imageTag)
             // creates a new user
-            const newUser = await service.createUser(info)
+            const newUser = await service.createUser({ ...info, avatarUrl, imageTag })
 
             return res.status(200).json({ success: true, message: 'User created', data: newUser })
         } 
         catch (error) {
+            console.log(error)
             return res.status(403).json({ success: false, message: error })                       
         }
         
@@ -62,6 +65,7 @@ class UserController {
     async updateUser(req, res){
         const infoID = req.params.id
         const updateData = req.body
+        let token = req.params.token;
         
         try{
             // check if use does not exist
@@ -81,10 +85,21 @@ class UserController {
                     return res.status(403).json({ success: false, message: 'User with update name already exists'})
                 }
             }
-    
-            const updatedData = await service.update(infoID, updateData)
-    
-            res.status(200).json({ success: true, message: 'Body updated successfully', data: updatedData })
+
+            // extract token and get current user
+            token = req.headers.authorization.split(' ')[1]
+            const currentUser_id = decodeToken(token)
+            
+            // Authorize only admin and owner of acc to feature
+            if ( currentUser_id == infoID || isAdmin) {
+                const updatedData = await service.update(infoID, updateData)
+
+                res.status(200).json({ success: true, message: 'Body updated successfully', data: updatedData })
+            
+            } else {
+                res.status(403).json({ success: false, message: 'Unauthorized User' })
+            }
+            
         } 
         catch (error) {
             res.status(403).json({ success: false, message: error })                       
@@ -95,6 +110,7 @@ class UserController {
     // Delete a single user - Soft delete
     async deleteUser(req, res) {
         const userID = req.params.id
+        let token = req.params.token;
         
         try {
             // Check if the user is the database except deleted
@@ -103,10 +119,22 @@ class UserController {
             if (!category || category.deleted == true) {
                 throw { success: false, message: 'User does not exist'}
             } 
-
-            await service.update(userID, { deleted: true }); // <= change delete status to 'true'
             
-            return res.status(200).json({ success: true, message: 'User deleted successfully'});
+            // extract token and get current user
+            token = req.headers.authorization.split(' ')[1]
+            
+            const currentUser_id = decodeToken(token)
+            
+            // Authorize only admin and owner of acc to feature
+            if ( currentUser_id == userID || isAdmin ) {
+                await service.update(userID, { deleted: true }); // <= change delete status to 'true'
+
+                return res.status(200).json({ 
+                    success: true, 
+                    message: 'User deleted successfully'});
+            } else {
+                res.status(403).json({ success: false, message: 'Unauthorized User' })
+            }
         } 
         catch (error) {
             res.status(403).json({ success: false, message: error })                       
@@ -137,7 +165,6 @@ class UserController {
         } catch (error) {
             res.status(403).json({ success: false, message: error })                       
         }
-       
     }
 
     // Fetch a single user by ID
