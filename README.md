@@ -77,6 +77,6 @@ Deleted posts are treated as unexisting to the users on Postit but all initial d
 > reference [Youtube Video - time @7:46:45](https://youtu.be/0sOvCWFmrtA)
 
 ## Error Handler
-    All route endpoints stored in `try/catch` to asyn and sync errors
+    All route endpoints stored in `try/catch` to hold asyn and sync errors
     API probed to remain active under all circumstance.
     Ready for Deployment
