@@ -19,9 +19,10 @@
 >   [Diagrams on dbdiagrams.io](https://dbdiagram.io/d/640748ba296d97641d861a12)
 
 ## Design Pattern
-For my post-it i used `layered_structure` cause it gave me the feeling of
-if i could get one right right, then the rest would be `cake`
-Lets see how it works.
+For this API `layered_structure` was abopted for the main purpose of creating 
+all the files in an order that could acomodate the rest easily. This structure was optimized 
+as `scalable` and the best for the project decided by the developer. 
+> Developer: "If I can get one path right, then the rest would be `cake`"
     
 ## **Soft Delete** 
 This feature was implemented by adding an extra attribute to the Postit model called `deleted`
@@ -80,3 +81,11 @@ Deleted posts are treated as unexisting to the users on Postit but all initial d
     All route endpoints stored in `try/catch` to hold asyn and sync errors
     API probed to remain active under all circumstance.
     Ready for Deployment
+
+## User AvatarUrl / Image Tag
+A special feature was adopted in this api, giving a unique avatar to all users with information drafter
+from their provided details, this feature was made possible using [`dicebear api`](https://www.dicebear.com/) to generate random avatars and return an `avatar url`. Image Tag was included in the user model to hold a `html img tag` for the avatar url.
+
+![Avatar](https://api.dicebear.com/5.x/pixel-art-neutral/svg?seed=prince247-98t6l-gmail-aguyj-com&size=200&radius=50)
+
+> Image Tag: **"<img src=\"${avatarUrl}\" alt=\"Avatar image for profile picture\" />"**
