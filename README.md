@@ -1,10 +1,22 @@
-Post-it by `Prog Bio`
+# Post-it by `Prog Bio`
 
-#### Start up
-   - 1st commit Hosted with my initial installed dependencies 
+## Prerequisites
+-   npm installed
+-   IDE eg _vscode_
+-   CLI eg _postman_
+
+## How to start code
+1.  Clone or Download repositry
+2.  Setup .env file => `port`, `mongo_uri`, `jwt_secret`
+2.  run `npm install`
+3.  run `npm start`
+>   Post-it is ready for use
+
+## Postman Documentation
+    [Postman Docs](https://documenter.getpostman.com/view/19026826/2s93JtRPcU)
+]
 
 ## Model Diagram
-
     https://dbdiagram.io/d/640748ba296d97641d861a12
 
 ## Design Pattern
@@ -65,7 +77,7 @@ Deleted posts are treated as unexisting to the users on Postit but all initial d
     Automate authorizstion setting by setting your `jwt_token` to this an _env variable_ 
 > reference [Youtube Video - time @7:46:45](https://youtu.be/0sOvCWFmrtA)
 
-### Error Handler
+## Error Handler
     All route endpoints stored in `try/catch` to asyn and sync errors
     API probed to remain active under all circumstance.
     Ready for Deployment
