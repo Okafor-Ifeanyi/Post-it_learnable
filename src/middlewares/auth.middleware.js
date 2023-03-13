@@ -3,7 +3,6 @@ const UserService = require('../services/user.service')
 
 const isAuth = (req, res, next) => {
     let token = req.params.token;
-    console.log(token)
 
     if( !req.headers.authorization || !req.headers.authorization.startsWith('Bearer')) {
         return res.status(403).json({message: 'Invalid token, Unauthorized user'})
@@ -25,13 +24,11 @@ async function isAdmin(req, res, next) {
     let token = req.params.token;
     
     token = req.headers.authorization.split(' ')[1]
-    // console.log(token)
     const userID = decodeToken(token);
-    console.log(userID);
 
     try{
         const user = await UserService.findbyID({ _id: userID })
-        // console.log(user);
+
         if (user.isAdmin == true){
             next()
         } else {

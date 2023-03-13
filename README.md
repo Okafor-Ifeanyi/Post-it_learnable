@@ -7,13 +7,17 @@
 
 ## How to start code
 1.  Clone or Download repositry
-2.  Setup .env file => `port`, `mongo_uri`, `jwt_secret`
+2.  Setup .env file => `port`, `mongo_uri`, `jwt _secret`
 2.  run `npm install`
 3.  run `npm start`
 >   Post-it is ready for use
 
+## Live Server `@render`
+>   [Render Live](https://post-it-q0g4.onrender.com)
+
 ## Postman Documentation
 >   [Postman Docs](https://documenter.getpostman.com/view/19026826/2s93JtRPcU)
+
 
 ## Model Diagram
 >   [Diagrams on dbdiagrams.io](https://dbdiagram.io/d/640748ba296d97641d861a12)

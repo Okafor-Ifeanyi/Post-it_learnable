@@ -12,13 +12,6 @@ class PostService {
             new: true
         }
     }
-
-    // // Delete a post
-    // async delete(id, userData) {
-    //     return await postModel.findByAndUpdate(id, userData), {
-    //         new: true
-    //     }
-    // }
     
     // find a posts by their id
     async findbyID(filter){
