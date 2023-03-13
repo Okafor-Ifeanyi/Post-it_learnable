@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const validate = require('../middlewares/validate.middleware')
-const CommentSchema = require("../schemas/Comment.schema")
+const CommentSchema = require("../schemas/comment.schema")
 const { isAuth, isAdmin } = require("../middlewares/auth.middleware")
 
 const { 
