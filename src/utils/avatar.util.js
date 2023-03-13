@@ -68,9 +68,9 @@ const generateRandomAvatar = async (email) => {
     }
 
     
-    const imageTag = '<img src="${avatarUrl}" alt="Avatar image for profile picture @dicebear API" />';
+    // const imageTag = '<img src="${avatarUrl}" alt="Avatar image for profile picture @dicebear API" />';
     const avatarUrl = `https://api.dicebear.com/5.x/${randomAvatarStyle}/svg?seed=${seed}&size=200&radius=50`;
-    return { avatarUrl, imageTag };
+    return { avatarUrl };
 }
 
 module.exports = generateRandomAvatar
