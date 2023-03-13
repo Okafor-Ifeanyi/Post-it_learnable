@@ -75,7 +75,7 @@ Deleted posts are treated as unexisting to the users on Postit but all initial d
 
 ### Set an Environment Variable
     Automate authorizstion setting by setting your `jwt_token` to this an _env variable_ 
-> reference [Youtube Video - time @7:46:45](https://youtu.be/0sOvCWFmrtA)
+> ref: [Youtube Video - time @7:46:45](https://youtu.be/0sOvCWFmrtA)
 
 ## Error Handler
     All route endpoints stored in `try/catch` to hold asyn and sync errors
@@ -84,7 +84,7 @@ Deleted posts are treated as unexisting to the users on Postit but all initial d
 
 ## User AvatarUrl / Image Tag
 A special feature was adopted in this api, giving a unique avatar to all users with information drafter
-from their provided details, this feature was made possible using [`dicebear api`](https://www.dicebear.com/) to generate random avatars and return an `avatar url`. Image Tag was included in the user model to hold a `html` img tag for the avatar url.
+from their provided details, this feature was made possible using [`dicebear api`](https://www.dicebear.com/) to generate random avatars and return an `avatar url`. **Image Tag** was included in the user model to hold a `html` img tag for the avatar url.
 
 ![Avatar](https://api.dicebear.com/5.x/pixel-art-neutral/svg?seed=prince247-98t6l-gmail-aguyj-com&size=200&radius=50)
 

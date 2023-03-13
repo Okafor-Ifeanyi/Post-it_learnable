@@ -46,10 +46,11 @@ class UserController {
             if( existingusername || existingemail) { 
                 return res.status(403).json({ success: false, message: 'User already exists' })
             }
+            // To generate the avatar and image tag(holds avatarUrl & email)
+            const { avatarUrl } = await generateRandomAvatar(info.email)
+            const imageTag = '<img src="${avatarUrl}" alt="Avatar image for "${email}" " />';
 
-            const { avatarUrl, imageTag } = await generateRandomAvatar(info.email)
-            // console.log(avatar, imageTag)
-            // creates a new user
+            // creates a new user (... => spreads out all the data )
             const newUser = await service.createUser({ ...info, avatarUrl, imageTag })
 
             return res.status(200).json({ success: true, message: 'User created', data: newUser })
