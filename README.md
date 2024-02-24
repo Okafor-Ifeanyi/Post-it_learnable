@@ -20,7 +20,7 @@
 
 
 ## Model Diagram
->   [Diagrams on dbdiagrams.io](https://dbdiagram.io/d/640748ba296d97641d861a12)
+>   [Diagram sketch on dbdiagrams.io](https://dbdiagram.io/d/640748ba296d97641d861a12)
 
 ## Design Pattern
 For this API `layered_structure` was abopted for the main purpose of creating 
