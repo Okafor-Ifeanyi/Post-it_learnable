@@ -2,7 +2,7 @@
 
 ## Prerequisites
 -   npm installed
--   IDE eg _vscode_ 
+-   IDE eg _vscode_
 -   CLI eg _postman_
 
 ## How to start code
