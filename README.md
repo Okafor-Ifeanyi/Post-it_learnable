@@ -2,8 +2,8 @@
 
 ## Prerequisites
 -   npm installed
--   IDE eg _vscode_
--   CLI eg _postman_
+-   IDE eg _vscode_ 
+-   CLI eg _postman_ 
 
 ## How to start code
 1.  Clone or Download repositry
