@@ -1,6 +1,6 @@
 # Post-it by `Prog Bio`
 
-## Prerequisites
+## Prerequisites 
 -   npm installed
 -   IDE eg _vscode_ 
 -   CLI eg _postman_ 
